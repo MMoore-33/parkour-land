@@ -2,6 +2,17 @@ using UnityEngine;
 
 public class PlayerController1 : MonoBehaviour
 {
+    public AudioClip footstepSound;
+    public AudioClip jumpLandSound;
+    public AudioClip respawnSound;
+
+    private AudioSource audioSource;
+
+    private bool wasGrounded;
+
+    private float footstepTimer;
+    public float footstepDelay = 0.5f; // time between steps
+
     public Transform spawnPoint;
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
@@ -22,6 +33,8 @@ public class PlayerController1 : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -57,6 +70,23 @@ public class PlayerController1 : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
+        // ===== FOOTSTEPS =====
+        if (isGrounded && isMoving)
+        {
+            footstepTimer -= Time.deltaTime;
+
+            if (footstepTimer <= 0f)
+            {
+                audioSource.PlayOneShot(footstepSound);
+                float delay = isSprinting ? 0.3f : 0.5f;
+                footstepTimer = delay;
+            }
+        }
+        else
+        {
+            footstepTimer = 0f;
+        }
+
         // ===== ROTATE PLAYER TO FACE MOVEMENT =====
         if (isMoving)
         {
@@ -74,6 +104,14 @@ public class PlayerController1 : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+        // ===== LANDING DETECTION =====
+        if (!wasGrounded && isGrounded && velocity.y < -2f)
+        {
+            audioSource.PlayOneShot(jumpLandSound);
+        }
+
+        wasGrounded = isGrounded;
+
         // ===== FALLING CHECK =====
         bool isFalling = velocity.y < -1f && !isGrounded;
 
@@ -87,6 +125,7 @@ public class PlayerController1 : MonoBehaviour
         if (transform.position.y < -10f)
         {
             Respawn();
+            audioSource.PlayOneShot(respawnSound);
         }
     }
 
