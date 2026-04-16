@@ -2,11 +2,34 @@ using UnityEngine;
 
 public class Terminal : MonoBehaviour
 {
+    private bool isOn = false;
+    private Renderer rend;
+
+    public Color offColor = Color.white;
+    public Color onColor = Color.green;
+
+    void Start()
+    {
+        rend = GetComponent<Renderer>();
+        rend.material.color = offColor;
+    }
+
     public void Activate()
     {
-        Debug.Log("Terminal Activated!");
+        isOn = !isOn;
 
-        // Example action (you can change this)
-        GetComponent<Renderer>().material.color = Color.green;
+        if (isOn)
+        {
+            rend.material.color = onColor;
+        }
+        else
+        {
+            rend.material.color = offColor;
+        }
+    }
+
+    public bool IsOn()
+    {
+        return isOn;
     }
 }
