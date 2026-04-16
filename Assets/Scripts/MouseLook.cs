@@ -2,40 +2,64 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    public Transform playerBody;
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 200f;
+    public float smoothSpeed = 10f;
+
+    public Transform pivot;
 
     float xRotation = 0f;
+    float yRotation = 0f;
+
+    float currentX;
+    float currentY;
 
     void Start()
+    {
+        LockCursor();
+    }
+
+    void Update()
+    {
+        HandleCursorToggle();
+        HandleMouseLook();
+    }
+
+    void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    void UnlockCursor()
     {
-        // ESC unlocks cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void HandleCursorToggle()
+    {
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+            UnlockCursor();
 
-        // Click locks again
         if (Input.GetMouseButtonDown(0))
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+            LockCursor();
+    }
 
+    void HandleMouseLook()
+    {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        playerBody.Rotate(Vector3.up * mouseX);
+        yRotation += mouseX;
+
+        // Smooth rotation (this is the upgrade)
+        currentX = Mathf.Lerp(currentX, xRotation, smoothSpeed * Time.deltaTime);
+        currentY = Mathf.Lerp(currentY, yRotation, smoothSpeed * Time.deltaTime);
+
+        transform.localRotation = Quaternion.Euler(currentX, 0f, 0f);
+        pivot.rotation = Quaternion.Euler(0f, currentY, 0f);
     }
 }

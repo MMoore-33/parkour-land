@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class PlayerController1 : MonoBehaviour
 {
+    public Transform spawnPoint;
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
     public float jumpForce = 5f;
     public float gravity = -9.8f;
 
     public Transform groundCheck;
-    public float groundDistance = 0.4f;
+    public float groundDistance = 0.3f;
     public LayerMask groundMask;
 
     private CharacterController controller;
@@ -37,31 +38,30 @@ public class PlayerController1 : MonoBehaviour
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
-        // Camera-relative movement
-        Vector3 camForward = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
+        // Camera-relative movement (IMPORTANT FIX)
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 right = Camera.main.transform.right;
 
-        camForward.y = 0;
-        camRight.y = 0;
+        forward.y = 0f;
+        right.y = 0f;
 
-        camForward.Normalize();
-        camRight.Normalize();
+        forward.Normalize();
+        right.Normalize();
 
-        Vector3 move = camForward * v + camRight * h;
-        move = Vector3.ClampMagnitude(move, 1f);
+        Vector3 move = forward * v + right * h;
 
-        // ===== ROTATION =====
-        if (move.magnitude > 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
-        }
-
-        // ===== MOVEMENT STATE =====
         bool isMoving = move.magnitude > 0.1f;
         bool isSprinting = Input.GetKey(KeyCode.LeftShift) && isMoving;
 
         float speed = isSprinting ? runSpeed : walkSpeed;
+
+        controller.Move(move * speed * Time.deltaTime);
+
+        // ===== ROTATE PLAYER TO FACE MOVEMENT =====
+        if (isMoving)
+        {
+            transform.forward = move;
+        }
 
         // ===== JUMP =====
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -72,15 +72,10 @@ public class PlayerController1 : MonoBehaviour
 
         // ===== GRAVITY =====
         velocity.y += gravity * Time.deltaTime;
-
-        // ===== FINAL MOVE =====
-        Vector3 finalMove = move * speed;
-        finalMove.y = velocity.y;
-
-        controller.Move(finalMove * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime);
 
         // ===== FALLING CHECK =====
-        bool isFalling = velocity.y < -0.1f && !isGrounded;
+        bool isFalling = velocity.y < -1f && !isGrounded;
 
         // ===== ANIMATIONS =====
         anim.SetBool("isMoving", isMoving);
@@ -93,14 +88,12 @@ public class PlayerController1 : MonoBehaviour
         {
             Respawn();
         }
-
-        Debug.Log(isGrounded);
     }
 
     void Respawn()
     {
         controller.enabled = false;
-        transform.position = new Vector3(0, 2, 0);
+        transform.position = spawnPoint.position;
         velocity = Vector3.zero;
         controller.enabled = true;
     }
