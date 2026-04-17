@@ -13,6 +13,21 @@ public class MouseLook : MonoBehaviour
     float currentX;
     float currentY;
 
+    void Start()
+    {
+        // Get current rotation from the camera
+        xRotation = transform.localEulerAngles.x;
+        yRotation = pivot.eulerAngles.y;
+
+        // Fix Unity angle wrap (VERY important)
+        if (xRotation > 180f)
+            xRotation -= 360f;
+
+        // Sync smoothing variables
+        currentX = xRotation;
+        currentY = yRotation;
+    }
+
     void Update()
     {
         HandleCursorToggle();

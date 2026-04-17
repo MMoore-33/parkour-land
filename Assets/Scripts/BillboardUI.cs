@@ -1,13 +1,29 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class BillboardUI : MonoBehaviour
 {
     void Update()
     {
-        if (Camera.main != null)
+        Camera cam;
+
+        if (Application.isPlaying)
         {
-            transform.LookAt(Camera.main.transform);
-            transform.Rotate(0, 180f, 0); // flip so it faces correctly
+            cam = Camera.main;
+        }
+#if UNITY_EDITOR
+        else
+        {
+            cam = SceneView.lastActiveSceneView.camera;
+        }
+#endif
+
+        if (cam != null)
+        {
+            transform.LookAt(cam.transform);
+            transform.Rotate(0, 180f, 0);
         }
     }
 }
