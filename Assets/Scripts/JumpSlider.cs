@@ -8,6 +8,11 @@ public class JumpSlider : MonoBehaviour
     public PlayerController1 player;
     public TextMeshProUGUI valueText;
 
+    public AudioSource uiAudio;
+    public AudioClip uiClickSound;
+
+    private float lastValue;
+
     void Start()
     {
         // Set default
@@ -24,6 +29,12 @@ public class JumpSlider : MonoBehaviour
     {
         player.jumpForce = value;
         UpdateText(value);
+
+        if (Mathf.Round(value) != Mathf.Round(lastValue))
+        {
+            uiAudio.PlayOneShot(uiClickSound);
+            lastValue = value;
+        }
     }
 
     void UpdateText(float value)

@@ -15,6 +15,13 @@ public class Terminal : MonoBehaviour
     // ADD THIS
     public SkyboxController skyboxController;
 
+    public AudioSource terminalAudio;
+    public AudioClip turnOnSound;
+    public AudioClip turnOffSound;
+
+    public AudioSource uiAudio;
+    public AudioClip uiClickSound;
+
     void Start()
     {
         rend = GetComponent<Renderer>();
@@ -32,11 +39,13 @@ public class Terminal : MonoBehaviour
         {
             rend.material.color = onColor;
             terminalUI.SetActive(true);
+            terminalAudio.PlayOneShot(turnOnSound);
         }
         else
         {
             rend.material.color = offColor;
             terminalUI.SetActive(false);
+            terminalAudio.PlayOneShot(turnOffSound);
         }
     }
 
@@ -49,15 +58,18 @@ public class Terminal : MonoBehaviour
     public void SetNight()
     {
         skyboxController.SetNight();
+        uiAudio.PlayOneShot(uiClickSound);
     }
 
     public void SetSunset()
     {
         skyboxController.SetSunset();
+        uiAudio.PlayOneShot(uiClickSound);
     }
 
     public void SetDay()
     {
         skyboxController.SetDay();
+        uiAudio.PlayOneShot(uiClickSound);
     }
 }

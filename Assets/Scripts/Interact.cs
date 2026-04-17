@@ -11,6 +11,10 @@ public class Interact : MonoBehaviour
 
     public PlayerController1 player;
 
+    public AudioSource uiAudio;
+
+    public AudioClip uiClickSound;
+
     void Start()
     {
         // Find the default speed object
@@ -66,6 +70,8 @@ public class Interact : MonoBehaviour
                 {
                     player.runSpeed = 3f;
                     HighlightSelected(obj);
+
+                    uiAudio.PlayOneShot(uiClickSound);
                 }
             }
 
@@ -78,6 +84,8 @@ public class Interact : MonoBehaviour
                 {
                     player.runSpeed = 6f;
                     HighlightSelected(obj);
+
+                    uiAudio.PlayOneShot(uiClickSound);
                 }
             }
 
@@ -90,6 +98,8 @@ public class Interact : MonoBehaviour
                 {
                     player.runSpeed = 9f;
                     HighlightSelected(obj);
+
+                    uiAudio.PlayOneShot(uiClickSound);
                 }
             }
 

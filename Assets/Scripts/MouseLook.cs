@@ -13,6 +13,9 @@ public class MouseLook : MonoBehaviour
     float currentX;
     float currentY;
 
+    bool canLook = false;
+    float lookDelay = 0.2f;
+
     void Start()
     {
         // Get current rotation from the camera
@@ -29,6 +32,8 @@ public class MouseLook : MonoBehaviour
         // Sync smoothing variables
         currentX = xRotation;
         currentY = yRotation;
+
+        Invoke(nameof(EnableLook), lookDelay);
     }
 
     void Update()
@@ -60,6 +65,8 @@ public class MouseLook : MonoBehaviour
 
     void HandleMouseLook()
     {
+        if (!canLook) return;
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -74,5 +81,10 @@ public class MouseLook : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(currentX, 0f, 0f);
         pivot.localRotation = Quaternion.Euler(0f, currentY, 0f);
+    }
+
+    void EnableLook()
+    {
+        canLook = true;
     }
 }
