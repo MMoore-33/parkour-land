@@ -7,7 +7,7 @@ public class BillboardUI : MonoBehaviour
 {
     void Update()
     {
-        Camera cam;
+        Camera cam = null;
 
         if (Application.isPlaying)
         {
