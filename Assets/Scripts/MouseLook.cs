@@ -17,7 +17,10 @@ public class MouseLook : MonoBehaviour
     {
         // Get current rotation from the camera
         xRotation = transform.localEulerAngles.x;
-        yRotation = pivot.eulerAngles.y;
+        yRotation = pivot.localEulerAngles.y;
+
+        if (yRotation > 180f)
+            yRotation -= 360f;
 
         // Fix Unity angle wrap (VERY important)
         if (xRotation > 180f)
@@ -70,6 +73,6 @@ public class MouseLook : MonoBehaviour
         currentY = Mathf.Lerp(currentY, yRotation, smoothSpeed * Time.deltaTime);
 
         transform.localRotation = Quaternion.Euler(currentX, 0f, 0f);
-        pivot.rotation = Quaternion.Euler(0f, currentY, 0f);
+        pivot.localRotation = Quaternion.Euler(0f, currentY, 0f);
     }
 }
