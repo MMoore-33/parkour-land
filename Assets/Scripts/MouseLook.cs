@@ -13,11 +13,6 @@ public class MouseLook : MonoBehaviour
     float currentX;
     float currentY;
 
-    void Start()
-    {
-        LockCursor();
-    }
-
     void Update()
     {
         HandleCursorToggle();
@@ -41,7 +36,7 @@ public class MouseLook : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
             UnlockCursor();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
             LockCursor();
     }
 

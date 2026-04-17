@@ -5,10 +5,15 @@ public class Terminal : MonoBehaviour
     private bool isOn = false;
     private Renderer rend;
 
+    public static bool isUIOpen = false;
+
     public GameObject terminalUI;
 
     public Color offColor = Color.white;
     public Color onColor = Color.green;
+
+    // ADD THIS
+    public SkyboxController skyboxController;
 
     void Start()
     {
@@ -21,13 +26,13 @@ public class Terminal : MonoBehaviour
     public void Activate()
     {
         isOn = !isOn;
+        isUIOpen = isOn;
 
         if (isOn)
         {
             rend.material.color = onColor;
             terminalUI.SetActive(true);
         }
-
         else
         {
             rend.material.color = offColor;
@@ -38,5 +43,21 @@ public class Terminal : MonoBehaviour
     public bool IsOn()
     {
         return isOn;
+    }
+
+    // ADD THESE FUNCTIONS
+    public void SetNight()
+    {
+        skyboxController.SetNight();
+    }
+
+    public void SetSunset()
+    {
+        skyboxController.SetSunset();
+    }
+
+    public void SetDay()
+    {
+        skyboxController.SetDay();
     }
 }
